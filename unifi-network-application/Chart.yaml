@@ -25,4 +25,4 @@ name: unifi-network-application
 sources:
   - https://github.com/captnbp/unifi-network-application-helm
   - https://lab.frogg.it/doca/unifi-network-application-helm
-version: 0.3.0
+version: 0.3.1
