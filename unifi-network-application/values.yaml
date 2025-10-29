@@ -492,6 +492,8 @@ ingress:
   ## ref: https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/
   ##
   ingressClassName: ""
+  ## @param ingress.ingressControllerType ingressControllerType that will be be used to implement the Ingress specific annotations (Ex. nginx or traefik)
+  ingressControllerType: "nginx"
   ## @param ingress.path Default path for the ingress record
   ## NOTE: You may need to set this to '/*' in order to use this with ALB ingress controllers
   ##

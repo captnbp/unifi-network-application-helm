@@ -27,8 +27,8 @@ spec:
     annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 6 }}
     {{- end }}
   secretName: {{ include "common.names.fullname" . }}-crt
-  duration: 4320h # 180d
-  renewBefore: 2160h # 90d
+  duration: 4320h0m0s # 180d
+  renewBefore: 2160h0m0s # 90d
   dnsNames:
     #- "{{ template "common.names.fullname" . }}"
     - "{{ printf "%s.%s.svc.%s" $serviceName $releaseNamespace $clusterDomain }}"
