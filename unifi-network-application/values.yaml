@@ -1,0 +1,770 @@
+## @section Global parameters
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageRegistry, imagePullSecrets and storageClass
+##
+
+## @param global.imageRegistry Global Docker image registry
+## @param global.imagePullSecrets Global Docker registry secret names as an array
+## @param global.storageClass Global StorageClass for Persistent Volume(s)
+##
+global:
+  imageRegistry: ""
+  ## E.g.
+  ## imagePullSecrets:
+  ##   - myRegistryKeySecretName
+  ##
+  imagePullSecrets: []
+  storageClass: ""
+
+## @section Common parameters
+##
+
+## @param kubeVersion Force target Kubernetes version (using Helm capabilities if not set)
+##
+kubeVersion: ""
+## @param nameOverride String to partially override common.names.fullname
+##
+nameOverride: ""
+## @param fullnameOverride String to fully override common.names.fullname
+##
+fullnameOverride: ""
+## @param namespaceOverride String to fully override common.names.namespace
+##
+namespaceOverride: ""
+## @param commonLabels Labels to add to all deployed objects
+##
+commonLabels: {}
+## @param commonAnnotations Annotations to add to all deployed objects
+##
+commonAnnotations: {}
+## @param dnsPolicy DNS Policy for pod
+## ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
+## E.g.
+## dnsPolicy: ClusterFirst
+dnsPolicy: ""
+## @param dnsConfig DNS Configuration pod
+## ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
+## E.g.
+## dnsConfig:
+##   options:
+##   - name: ndots
+##     value: "4"
+dnsConfig: {}
+## @param clusterDomain Default Kubernetes cluster domain
+##
+clusterDomain: cluster.local
+## @param extraDeploy Array of extra objects to deploy with the release
+##
+extraDeploy: []
+## Enable diagnostic mode in the statefulset
+##
+diagnosticMode:
+  ## @param diagnosticMode.enabled Enable diagnostic mode (all serviceMonitors will be disabled and the command will be overridden)
+  ##
+  enabled: false
+  ## @param diagnosticMode.command Command to override all containers in the the statefulset
+  ##
+  command:
+    - sleep
+  ## @param diagnosticMode.args Args to override all containers in the the statefulset
+  ##
+  args:
+    - infinity
+
+## unifi-network-application image version
+## ref: https://hub.docker.com/r/captnbp/unifi-network-application/tags
+## @param image.registry [default: REGISTRY_NAME] unifi-network-application image registry
+## @param image.repository [default: REPOSITORY_NAME/unifi-network-application] unifi-network-application image repository
+## @skip image.tag unifi-network-application image tag (immutable tags are recommended)
+## @param image.digest unifi-network-application image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag
+## @param image.pullPolicy unifi-network-application image pull policy
+## @param image.pullSecrets Specify docker-registry secret names as an array
+## @param image.debug Specify if debug logs should be enabled
+##
+image:
+  registry: docker.io
+  repository: captnbp/unifi-network-application
+  tag: 8.0.28-r0
+  digest: ""
+  ## Specify a imagePullPolicy
+  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ## Example:
+  ## pullSecrets:
+  ##   - myRegistryKeySecretName
+  ##
+  pullSecrets: []
+
+## @param command Override default container command (useful when using custom images)
+##
+command: []
+## @param args Override default container args (useful when using custom images)
+##
+args: []
+## @param extraEnvVars Extra environment variables to be set on unifi-network-application container
+## Example:
+## extraEnvVars:
+##   - name: FOO
+##     value: "bar"
+##
+extraEnvVars: []
+## @param extraEnvVarsCM Name of existing ConfigMap containing extra env vars
+##
+extraEnvVarsCM: ""
+## @param extraEnvVarsSecret Name of existing Secret containing extra env vars
+##
+extraEnvVarsSecret: ""
+
+## @section unifi-network-application statefulset parameters
+
+## @param containerPorts.https unifi-network-application HTTPS container port
+## @param containerPorts.captiveHttp unifi-network-application HTTP for captive portail container port
+## @param containerPorts.captiveHttps unifi-network-application HTTPS for captive portail container port
+## @param containerPorts.controller unifi-network-application HTTP for controller container port
+## @param containerPorts.speedtest unifi-network-application HTTP for speedtest container port
+## @param containerPorts.stun unifi-network-application UDP for stun container port
+## @param containerPorts.discovery unifi-network-application UDP for discovery container port
+##
+containerPorts:
+  https: 8443
+  captiveHttp: 8880
+  captiveHttps: 8843
+  controller: 8080
+  speedtest: 6789
+  stun: 3478
+  discovery: 10001
+
+## @param extraContainerPorts Optionally specify extra list of additional port-mappings for unifi-network-application container
+##
+extraContainerPorts: []
+
+## unifi-network-application pods' SecurityContext
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+## @param podSecurityContext.enabled Enabled unifi-network-application pods' Security Context
+## @param podSecurityContext.fsGroup Set unifi-network-application pod's Security Context fsGroup
+##
+podSecurityContext:
+  enabled: true
+  fsGroup: 100
+## unifi-network-application containers' Security Context
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+## @param containerSecurityContext.enabled Enabled containers' Security Context
+## @param containerSecurityContext.runAsUser Set containers' Security Context runAsUser
+## @param containerSecurityContext.runAsNonRoot Set container's Security Context runAsNonRoot
+## @param containerSecurityContext.privileged Set container's Security Context privileged
+## @param containerSecurityContext.readOnlyRootFilesystem Set container's Security Context readOnlyRootFilesystem
+## @param containerSecurityContext.allowPrivilegeEscalation Set container's Security Context allowPrivilegeEscalation
+## @param containerSecurityContext.capabilities.drop List of capabilities to be dropped
+## @param containerSecurityContext.seccompProfile.type Set container's Security Context seccomp profile
+##
+containerSecurityContext:
+  enabled: true
+  runAsUser: 100
+  runAsNonRoot: true
+  privileged: false
+  readOnlyRootFilesystem: false
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: ["ALL"]
+    add:
+      - SETFCAP
+  seccompProfile:
+    type: "RuntimeDefault"
+## unifi-network-application resource requests and limits
+## ref: https://kubernetes.io/docs/user-guide/compute-resources/
+## @param resources.limits The resources limits for the unifi-network-application containers
+## @param resources.requests The requested resources for the unifi-network-application containers
+##
+resources:
+  limits: {}
+  requests: {}
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
+
+## @section RBAC parameter
+## Specifies whether a ServiceAccount should be created
+##
+serviceAccount:
+  ## @param serviceAccount.create Enable the creation of a ServiceAccount for unifi-network-application pods
+  ##
+  create: true
+  ## @param serviceAccount.name Name of the created ServiceAccount
+  ## If not set and create is true, a name is generated using the fullname template
+  ##
+  name: ""
+  ## @param serviceAccount.automountServiceAccountToken Auto-mount the service account token in the pod
+  ##
+  automountServiceAccountToken: false
+  ## @param serviceAccount.annotations Additional custom annotations for the ServiceAccount
+  ##
+  annotations: {}
+  ## @param serviceAccount.extraLabels Additional labels for the ServiceAccount
+  ##
+  extraLabels: {}
+
+## Configure extra options for unifi-network-application containers' liveness, readiness and startup serviceMonitors
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-serviceMonitors/#configure-serviceMonitors
+## @param livenessProbe.enabled Enable livenessProbe on unifi-network-application containers
+## @param livenessProbe.initialDelaySeconds Initial delay seconds for livenessProbe
+## @param livenessProbe.periodSeconds Period seconds for livenessProbe
+## @param livenessProbe.timeoutSeconds Timeout seconds for livenessProbe
+## @param livenessProbe.failureThreshold Failure threshold for livenessProbe
+## @param livenessProbe.successThreshold Success threshold for livenessProbe
+##
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 120
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
+## @param readinessProbe.enabled Enable readinessProbe on unifi-network-application containers
+## @param readinessProbe.initialDelaySeconds Initial delay seconds for readinessProbe
+## @param readinessProbe.periodSeconds Period seconds for readinessProbe
+## @param readinessProbe.timeoutSeconds Timeout seconds for readinessProbe
+## @param readinessProbe.failureThreshold Failure threshold for readinessProbe
+## @param readinessProbe.successThreshold Success threshold for readinessProbe
+##
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
+## When enabling this, make sure to set initialDelaySeconds to 0 for livenessProbe and readinessProbe
+## @param startupProbe.enabled Enable startupProbe on unifi-network-application containers
+## @param startupProbe.initialDelaySeconds Initial delay seconds for startupProbe
+## @param startupProbe.periodSeconds Period seconds for startupProbe
+## @param startupProbe.timeoutSeconds Timeout seconds for startupProbe
+## @param startupProbe.failureThreshold Failure threshold for startupProbe
+## @param startupProbe.successThreshold Success threshold for startupProbe
+##
+startupProbe:
+  enabled: false
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  timeoutSeconds: 1
+  failureThreshold: 60
+  successThreshold: 1
+## @param customlivenessProbe Custom Liveness Probe for unifi-network-application
+##
+customlivenessProbe: {}
+## @param customreadinessProbe Custom Readiness Probe unifi-network-application
+##
+customreadinessProbe: {}
+## @param customstartupProbe Custom Startup Probe for unifi-network-application
+##
+customstartupProbe: {}
+## @param lifecycleHooks LifecycleHooks to set additional configuration at startup
+##
+lifecycleHooks: {}
+## @param hostAliases Deployment pod host aliases
+## https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/
+##
+hostAliases: []
+## @param podLabels Extra labels for unifi-network-application pods
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+##
+podLabels: {}
+## @param podAnnotations Annotations for unifi-network-application pods
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+##
+podAnnotations: {}
+## @param podAffinityPreset Pod affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
+## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
+##
+podAffinityPreset: ""
+## @param podAntiAffinityPreset Pod anti-affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
+## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
+##
+podAntiAffinityPreset: soft
+## Node affinity preset
+## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#node-affinity
+##
+nodeAffinityPreset:
+  ## @param nodeAffinityPreset.type Node affinity preset type. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
+  ##
+  type: ""
+  ## @param nodeAffinityPreset.key Node label key to match. Ignored if `affinity` is set.
+  ## E.g.
+  ## key: "kubernetes.io/e2e-az-name"
+  ##
+  key: ""
+  ## @param nodeAffinityPreset.values Node label values to match. Ignored if `affinity` is set.
+  ## E.g.
+  ## values:
+  ##   - e2e-az1
+  ##   - e2e-az2
+  ##
+  values: []
+## @param affinity Affinity for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+affinity: {}
+## @param nodeSelector Node labels for pod assignment
+## ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+## @param tolerations Tolerations for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+##
+tolerations: []
+## @param topologySpreadConstraints Topology Spread Constraints for pod assignment spread across your cluster among failure-domains. Evaluated as a template
+## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/#spread-constraints-for-pods
+##
+topologySpreadConstraints: []
+## @param podManagementPolicy Pod management policy for the unifi-network-application statefulset
+##
+podManagementPolicy: Parallel
+## @param priorityClassName unifi-network-application pods' Priority Class Name
+## ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+##
+priorityClassName: ""
+## @param schedulerName Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+schedulerName: ""
+## @param terminationGracePeriodSeconds Seconds unifi-network-application pod needs to terminate gracefully
+## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods
+##
+terminationGracePeriodSeconds: ""
+## @param updateStrategy.type unifi-network-application statefulset strategy type
+## @param updateStrategy.rollingUpdate unifi-network-application statefulset rolling update configuration parameters
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
+##
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate: {}
+## @param extraVolumes Optionally specify extra list of additional volumes for unifi-network-application pods
+##
+extraVolumes: []
+## @param extraVolumeMounts Optionally specify extra list of additional volumeMounts for unifi-network-application container(s)
+##
+extraVolumeMounts: []
+## @param initContainers Add additional init containers to the unifi-network-application pods
+## Example:
+## initContainers:
+##   - name: your-image-name
+##     image: your-image
+##     imagePullPolicy: Always
+##     ports:
+##       - name: portname
+##         containerPort: 1234
+##
+initContainers: []
+## @param sidecars Add additional sidecar containers to the unifi-network-application pods
+## Example:
+## sidecars:
+##   - name: your-image-name
+##     image: your-image
+##     imagePullPolicy: Always
+##     ports:
+##       - name: portname
+##         containerPort: 1234
+##
+sidecars: []
+
+## Persistence parameters
+##
+persistence:
+  ## @param persistence.enabled Enable Logstash data persistence using PVC
+  ##
+  enabled: true
+  ## @param persistence.existingClaim A manually managed Persistent Volume and Claim
+  ## If defined, PVC must be created manually before volume will be bound
+  ## The value is evaluated as a template
+  ##
+  existingClaim: ""
+  ## @param persistence.storageClass PVC Storage Class for Logstash data volume
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ## set, choosing the default provisioner.
+  ##
+  storageClass: ""
+  ## @param persistence.accessModes PVC Access Mode for Logstash data volume
+  ##
+  accessModes:
+    - ReadWriteOnce
+  ## @param persistence.size PVC Storage Request for Logstash data volume
+  ##
+  size: 2Gi
+  ## @param persistence.annotations Annotations for the PVC
+  ##
+  annotations: {}
+  ## @param persistence.mountPath Mount path of the Logstash data volume
+  ##
+  mountPath: /data
+  ## @param persistence.selector Selector to match an existing Persistent Volume for data PVC
+  ## If set, the PVC can't have a PV dynamically provisioned for it
+  ## E.g.
+  ## selector:
+  ##   matchLabels:
+  ##     app: my-app
+  ##
+  selector: {}
+
+## @section Exposure parameters
+##
+
+## Service configuration
+##
+service:
+  ## @param service.type Kubernetes service type
+  ##
+  type: LoadBalancer
+  ## @param service.ports.https unifi-network-application service HTTPS port
+  ##
+  ports:
+    https: 8443
+  ## @param service.nodePorts [object] Specify the nodePort values for the LoadBalancer and NodePort service types.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+  ##
+  nodePorts:
+    https: ""
+  ## @param service.sessionAffinity Control where client requests go, to the same pod or round-robin
+  ## Values: ClientIP or None
+  ## ref: https://kubernetes.io/docs/user-guide/services/
+  ##
+  sessionAffinity: None
+  ## @param service.sessionAffinityConfig Additional settings for the sessionAffinity
+  ## sessionAffinityConfig:
+  ##   clientIP:
+  ##     timeoutSeconds: 300
+  ##
+  sessionAffinityConfig: {}
+  ## @param service.clusterIP unifi-network-application service clusterIP IP
+  ## e.g:
+  ## clusterIP: None
+  ##
+  clusterIP: ""
+  ## @param service.loadBalancerIP loadBalancerIP for the SuiteCRM Service (optional, cloud specific)
+  ## ref: https://kubernetes.io/docs/user-guide/services/#type-loadbalancer
+  ##
+  loadBalancerIP: ""
+  ## @param service.loadBalancerSourceRanges Address that are allowed when service is LoadBalancer
+  ## https://kubernetes.io/docs/tasks/access-application-cluster/configure-cloud-provider-firewall/#restrict-access-for-loadbalancer-service
+  ## Example:
+  ## loadBalancerSourceRanges:
+  ##   - 10.10.10.0/24
+  ##
+  loadBalancerSourceRanges: []
+  ## @param service.externalTrafficPolicy Enable client source IP preservation
+  ## ref https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+  ##
+  externalTrafficPolicy: Cluster
+  ## @param service.annotations Additional custom annotations for unifi-network-application service
+  ##
+  annotations: {}
+  ## @param service.extraPorts Extra port to expose on unifi-network-application service
+  ##
+  extraPorts: []
+
+## unifi-network-application ingress parameters
+## ref: https://kubernetes.io/docs/user-guide/ingress/
+##
+
+ingress:
+  ## @param ingress.enabled Enable ingress record generation for unifi-network-application
+  ##
+  enabled: false
+  ## @param ingress.pathType Ingress path type
+  ##
+  pathType: ImplementationSpecific
+  ## @param ingress.apiVersion Force Ingress API version (automatically detected if not set)
+  ##
+  apiVersion: ""
+  ## @param ingress.hostname Default host for the ingress record
+  ##
+  hostname: unifi-network-application.local
+  ## @param ingress.ingressClassName IngressClass that will be be used to implement the Ingress (Kubernetes 1.18+)
+  ## This is supported in Kubernetes 1.18+ and required if you have more than one IngressClass marked as the default for your cluster .
+  ## ref: https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/
+  ##
+  ingressClassName: ""
+  ## @param ingress.path Default path for the ingress record
+  ## NOTE: You may need to set this to '/*' in order to use this with ALB ingress controllers
+  ##
+  path: /
+  ## @param ingress.annotations Additional annotations for the Ingress resource. To enable certificate autogeneration, place here your cert-manager annotations.
+  ## Use this parameter to set the required annotations for cert-manager, see
+  ## ref: https://cert-manager.io/docs/usage/ingress/#supported-annotations
+  ## e.g:
+  ## annotations:
+  ##   kubernetes.io/ingress.class: nginx
+  ##   cert-manager.io/cluster-issuer: cluster-issuer-name
+  ##
+  annotations: {}
+  ## @param ingress.tls Enable TLS configuration for the host defined at `ingress.hostname` parameter
+  ## TLS certificates will be retrieved from a TLS secret with name: `{{- printf "%s-tls" .Values.ingress.hostname }}`
+  ## You can:
+  ##   - Use the `ingress.secrets` parameter to create this TLS secret
+  ##   - Rely on cert-manager to create it by setting the corresponding annotations
+  ##   - Rely on Helm to create self-signed certificates by setting `ingress.selfSigned=true`
+  ##
+  tls: false
+  ## @param ingress.selfSigned Create a TLS secret for this ingress record using self-signed certificates generated by Helm
+  ##
+  selfSigned: false
+  ## @param ingress.extraHosts An array with additional hostname(s) to be covered with the ingress record
+  ## e.g:
+  ## extraHosts:
+  ##   - name: %%COMPONENT_NAME%%.local
+  ##     path: /
+  ##
+  extraHosts: []
+  ## @param ingress.extraPaths An array with additional arbitrary paths that may need to be added to the ingress under the main host
+  ## e.g:
+  ## extraPaths:
+  ## - path: /*
+  ##   backend:
+  ##     serviceName: ssl-redirect
+  ##     servicePort: use-annotation
+  ##
+  extraPaths: []
+  ## @param ingress.extraTls TLS configuration for additional hostname(s) to be covered with this ingress record
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
+  ## e.g:
+  ## extraTls:
+  ## - hosts:
+  ##     - %%COMPONENT_NAME%%.local
+  ##   secretName: %%COMPONENT_NAME%%.local-tls
+  ##
+  extraTls: []
+  ## @param ingress.secrets Custom TLS certificates as secrets
+  ## NOTE: 'key' and 'certificate' are expected in PEM format
+  ## NOTE: 'name' should line up with a 'secretName' set further up
+  ## If it is not set and you're using cert-manager, this is unneeded, as it will create a secret for you with valid certificates
+  ## If it is not set and you're NOT using cert-manager either, self-signed certificates will be created valid for 365 days
+  ## It is also possible to create and manage the certificates outside of this helm chart
+  ## Please see README.md for more information
+  ## e.g:
+  ## secrets:
+  ##   - name: %%COMPONENT_NAME%%.local-tls
+  ##     key: |-
+  ##       -----BEGIN RSA PRIVATE KEY-----
+  ##       ...
+  ##       -----END RSA PRIVATE KEY-----
+  ##     certificate: |-
+  ##       -----BEGIN CERTIFICATE-----
+  ##       ...
+  ##       -----END CERTIFICATE-----
+  ##
+  secrets: []
+  ## @param ingress.extraRules Additional rules to be covered with this ingress record
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-rules
+  ## e.g:
+  ## extraRules:
+  ## - host: example.local
+  ##     http:
+  ##       path: /
+  ##       backend:
+  ##         service:
+  ##           name: example-svc
+  ##           port:
+  ##             name: http
+  ##
+  extraRules: []
+
+## Unifi Poller Prometheus exporter configuration
+## ref: https://github.com/unifi-poller/unifi-poller
+##
+metrics:
+  ## @param metrics.enabled Enable exposing unpoller statistics
+  ##
+  enabled: true
+
+  ## Readonly credential to pull metrics from unifi-network-application API
+  ## ref: https://github.com/unifi-poller/unifi-poller/wiki/Installation#prerequisites
+  username: unifipoller
+  password: PASSWORD
+
+  image:
+    registry: ghcr.io
+    repository: unpoller/unpoller
+    tag: latest
+    pullPolicy: Always
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistryKeySecretName
+
+  ## unifi-poller Prometheus exporter service type
+  ##
+  service:
+    ## @param metrics.service.ports.metrics Metrics service HTTP port
+    ##
+    ports:
+      metrics: 9130
+    ## @param metrics.service.annotations [object] Annotations for enabling prometheus to access the metrics endpoints
+    ##
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "{{ .Values.metrics.service.ports.http }}"
+  ## unpoller Prometheus exporter resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources:
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    requests:
+      memory: 15Mi
+      cpu: "0.02"
+    limits:
+      memory: 50Mi
+      cpu: "0.1"
+  ## Metrics exporter pod Annotation and Labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  ##
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9130"
+    
+  ## Extra labels to add to Pod
+  podLabels: {}
+
+  ## Prometheus Operator serviceMonitor configuration
+  ##
+  serviceMonitor:
+    ## @param metrics.serviceMonitor.enabled Create serviceMonitor Resource for scraping metrics using PrometheusOperator
+    ##
+    enabled: true
+    ## @param metrics.serviceMonitor.port Metrics service HTTP port
+    ##
+    port: metrics
+    ## @param metrics.serviceMonitor.path Metrics service HTTP path. Deprecated: Use @param metrics.serviceMonitor.endpoints instead
+    ##
+    path: ""
+    ## @param metrics.serviceMonitor.namespace Namespace which Prometheus is running in
+    ##
+    namespace: ""
+    ## @param metrics.serviceMonitor.interval Interval at which metrics should be scraped
+    ##
+    interval: 30s
+    ## @param metrics.serviceMonitor.scrapeTimeout Specify the timeout after which the scrape is ended
+    ## e.g:
+    ##   scrapeTimeout: 30s
+    ##
+    scrapeTimeout: ""
+    ## @param metrics.serviceMonitor.labels Additional labels that can be used so serviceMonitor will be discovered by Prometheus
+    ##
+    labels: {}
+    ## @param metrics.serviceMonitor.selector Prometheus instance selector labels
+    ## ref: https://github.com/bitnami/charts/tree/main/bitnami/prometheus-operator#prometheus-configuration
+    ##
+    selector: {}
+    ## @param metrics.serviceMonitor.relabelings RelabelConfigs to apply to samples before scraping
+    ##
+    relabelings: []
+    ## @param metrics.serviceMonitor.metricRelabelings MetricRelabelConfigs to apply to samples before ingestion
+    ##
+    metricRelabelings: []
+    ## @param metrics.serviceMonitor.honorLabels honorLabels chooses the metric's labels on collisions with target labels
+    ##
+    honorLabels: false
+    ## @param metrics.serviceMonitor.jobLabel The name of the label on the target service to use as the job name in prometheus.
+    ##
+    jobLabel: ""
+
+  ## Prometheus Operator probe configuration
+  ##
+  probe:
+    ## @param metrics.probe.enabled Create probe Resource
+    ##
+    enabled: true
+    ## @param metrics.probe.namespace Namespace which Prometheus is running in
+    ##
+    namespace: ""
+    ## @param metrics.probe.interval Interval at which http probe should be executed
+    ##
+    interval: 60s
+    ## @param metrics.probe.labels Additional labels that can be used so probe will be discovered by Prometheus
+    ##
+    labels: {}
+    ## @param metrics.probe.module Blackbox module to use
+    ##
+    module: http_2xx
+    ## @param metrics.probe.prober.url Blackbox URL without the scheme
+    ##
+    prober:
+      url: kube-prometheus-stack-blackbox-exporter.kube-prometheus-stack.svc.cluster.local:19115
+
+## External MongoDB configuration
+## @param externalDatabase.host Database host
+## @param externalDatabase.port Database port number
+## @param externalDatabase.user Non-root username
+## @param externalDatabase.password Password for the non-root username
+## @param externalDatabase.database Database name
+## @param externalDatabase.existingSecret Name of an existing secret resource containing the database credentials
+## @param externalDatabase.existingSecretHostKey Name of an existing secret key containing the database host name
+## @param externalDatabase.existingSecretPortKey Name of an existing secret key containing the database port
+## @param externalDatabase.existingSecretUserKey Name of an existing secret key containing the database user
+## @param externalDatabase.existingSecretDatabaseKey Name of an existing secret key containing the database name
+## @param externalDatabase.existingSecretPasswordKey Name of an existing secret key containing the database credentials
+## @param externalDatabase.annotations Additional custom annotations for external database secret object
+##
+externalDatabase:
+  host: "mongodb"
+  port: 27017
+  user: unifi-network-application
+  database: unifi-network-application
+  password: ""
+  statsUser: unifi-network-application-stats
+  statsDatabase: unifi-network-application-stats
+  statsPassword: ""
+  existingSecret: ""
+  existingSecretHostKey: ""
+  existingSecretPortKey: ""
+  existingSecretUserKey: ""
+  existingSecretStatsUserKey: ""
+  existingSecretDatabaseKey: ""
+  existingSecretStatsDatabaseKey: ""
+  existingSecretPasswordKey: ""
+  existingSecretStatsPasswordKey: ""
+  annotations: {}
+
+## @section Global TLS settings for internal CA
+##
+tls:
+  ## @param tls.enabled Enable internal TLS between Ingress controller and unifi
+  enabled: true
+  ## @param tls.autoGenerated Create cert-manager signed TLS certificates.
+  ##
+  autoGenerated: true
+
+  ## @param tls.existingSecret Existing secret containing the certificates for Unifi
+  ##
+  existingSecret: ""
+  ## Base subject details for certificate generation, node_dn filtering, admin_dn 
+  ##
+  subject:
+    ## @param tls.subject.organizations Subject's organization
+    ##
+    organizations: "unifi-network-application"
+    ## @param tls.subject.countries Subject's country
+    ##
+    countries: "fr"
+  issuerRef:
+    ## @param tls.issuerRef.existingIssuerName Existing name of the cert-manager http issuer. If provided, it won't create a default one.
+    ##
+    existingIssuerName: ""
+    ## @param tls.issuerRef.kind Kind of the cert-manager issuer resource (defaults to "Issuer")
+    ##
+    kind: "Issuer"
+    ## @param tls.issuerRef.group Group of the cert-manager issuer resource (defaults to "cert-manager.io")
+    ##
+    group: "cert-manager.io"

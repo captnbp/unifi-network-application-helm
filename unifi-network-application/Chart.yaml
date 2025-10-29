@@ -1,0 +1,28 @@
+annotations:
+  category: DeveloperTools
+  licenses: Apache-2.0
+  images: |
+    - name: unifi-network-application
+      image: docker.io/captnbp/unifi-controller:9.5.21
+    - name: unpoller
+      image: ghcr.io/unpoller/unpoller:latest
+apiVersion: v2
+appVersion: 9.5.21
+dependencies:
+  - name: common
+    repository: oci://registry-1.docker.io/bitnamicharts
+    tags:
+    - bitnami-common
+    version: 2.x.x
+description: unifi-network-application
+icon: https://bananaspliff.github.io/geek-charts/unifi-network-application/logo/unifi-network-application.png
+keywords:
+  - unifi
+maintainers:
+  - email: benoit.pourre@gmail.com
+    name: Benoît Pourre
+name: unifi-network-application
+sources:
+  - https://github.com/captnbp/unifi-network-application-helm
+  - https://lab.frogg.it/doca/unifi-network-application-helm
+version: 0.2.1

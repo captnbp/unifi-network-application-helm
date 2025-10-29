@@ -1,0 +1,39 @@
+{{- if .Values.metrics.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "common.names.fullname" . }}
+  namespace: {{ include "common.names.namespace" . | quote }}
+  labels: {{- include "common.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 4 }}
+    app.kubernetes.io/component: unifi-poller
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- end }}
+data:
+  up.yaml: |-
+    poller:
+      debug: false
+      quiet: false
+      plugins: []
+
+    prometheus:
+      disable: false
+      http_listen: "0.0.0.0:9130"
+      report_errors: false
+
+    influxdb:
+      disable: true
+
+    unifi:
+      dynamic: false
+      defaults:
+        role: "{{ .Values.role }}"
+        user: "{{ .Values.metrics.username }}"
+        url:  "https://localhost:8443"
+        sites:
+          - all
+        verify_ssl: false
+        save_ids:   false
+        save_dpi:   false
+        save_sites: true
+{{- end }}
