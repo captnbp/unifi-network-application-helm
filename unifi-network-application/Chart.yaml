@@ -3,11 +3,11 @@ annotations:
   licenses: Apache-2.0
   images: |
     - name: unifi-network-application
-      image: docker.io/captnbp/unifi-controller:9.5.21
+      image: docker.io/captnbp/unifi-controller:10.0.160
     - name: unpoller
       image: ghcr.io/unpoller/unpoller:latest
 apiVersion: v2
-appVersion: 9.5.21
+appVersion: 10.0.160
 dependencies:
   - name: common
     repository: oci://registry-1.docker.io/bitnamicharts
@@ -25,4 +25,4 @@ name: unifi-network-application
 sources:
   - https://github.com/captnbp/unifi-network-application-helm
   - https://lab.frogg.it/doca/unifi-network-application-helm
-version: 0.3.2
+version: 0.3.3
