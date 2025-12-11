@@ -190,6 +190,11 @@ resources:
 ##
 # schedulerName:
 
+## @param replicaCount Number of unifi-network-application replicas to deploy
+##
+replicaCount: 1
+
+
 ## @section RBAC parameter
 ## Specifies whether a ServiceAccount should be created
 ##
