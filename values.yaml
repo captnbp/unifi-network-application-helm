@@ -85,7 +85,7 @@ diagnosticMode:
 image:
   registry: docker.io
   repository: captnbp/unifi-network-application
-  tag: 10.4.57
+  tag: 10.5.67
   digest: ""
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'

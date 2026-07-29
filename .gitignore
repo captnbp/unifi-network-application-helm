@@ -1,3 +1,7 @@
-charts/*
-values-*
-README.md
+*.tgz
+/.idea/*
+.vscode
+.DS_Store
+values-*.yaml
+charts
+artifacthub-repo.yml

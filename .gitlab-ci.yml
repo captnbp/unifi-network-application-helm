@@ -4,4 +4,4 @@ include:
     file: /pipelines/helm.yaml
 
 variables:
-  CHART_FOLDER: "unifi-network-application"
+  CHART_FOLDER: ""
